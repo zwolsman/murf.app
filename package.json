@@ -1,0 +1,10 @@
+{
+  "name": "murf.app",
+  "version": "1.0.0",
+  "description": "Marvin's website",
+  "main": "index.html",
+  "repository": "https://github.com/zwolsman/murf.app",
+  "author": "Marvin <murf@majos.nl>",
+  "license": "MIT",
+  "private": false
+}
