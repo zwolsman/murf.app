@@ -41,7 +41,7 @@ function setup_progress_bar_animation()
 
                 // Animate progress bar
                 if ($element.hasClass('a-progress-bar')) {
-                    $element.css('width', $element.attr('data-percent') + '%');
+                    $element.css('width', ($element.attr('data-iq') / 3)+ '%');
                 }
 
             }
