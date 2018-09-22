@@ -2,15 +2,15 @@ $(document).ready(function() {
 
     $('html').addClass('js-enabled');
 
-    setup_nivo_lightbox();
-    setup_dense();
+    setupNivoLightbox();
+    setupDense();
 
     $(window).load(function() {
-        $(".js-preloader").fadeOut(800, function() {
+        $(".js-preloader").fadeOut(800, () => {
             $(".js-main-container").fadeIn(800);
 
-            setup_scrollreveal();
-            setup_progress_bar_animation();
+            setupScrollReveal();
+            setupProgressBarAnimation();
         });
     });
 
@@ -18,25 +18,25 @@ $(document).ready(function() {
 
 
 
-function setup_progress_bar_animation()
+function setupProgressBarAnimation()
 {
-    var $animation_elements = $("[class*='a-']");
+    var $animationElements = $("[class*='a-']");
     var $window = $(window);
 
     $window.on('scroll resize', function() {
-        var window_height = $window.height();
-        var window_top_position = $window.scrollTop();
-        var window_bottom_position = (window_top_position + window_height);
+        var windowHeight = $window.height();
+        var windowTopPosition = $window.scrollTop();
+        var windowBottomPosition = (windowTopPosition + windowHeight);
 
-        $.each($animation_elements, function() {
+        $.each($animationElements, function() {
             var $element = $(this);
-            var element_height = $element.outerHeight();
-            var element_top_position = $element.offset().top;
-            var element_bottom_position = (element_top_position + element_height);
+            var elementHeight = $element.outerHeight();
+            var elementTopPosition = $element.offset().top;
+            var elementBottomPosition = (elementTopPosition + elementHeight);
 
             // Check to see if this current container is within viewport
-            if ((element_bottom_position >= window_top_position) &&
-                (element_top_position <= window_bottom_position)) {
+            if ((elementBottomPosition >= windowTopPosition) &&
+                (elementTopPosition <= windowBottomPosition)) {
                 $element.addClass('in-view');
 
                 // Animate progress bar
@@ -57,7 +57,7 @@ function setup_progress_bar_animation()
 
 
 
-function setup_dense()
+function setupDense()
 {
     if($.isFunction($.fn.dense)) {
 
@@ -70,33 +70,37 @@ function setup_dense()
 
 
 
-function setup_scrollreveal()
+function setupScrollReveal()
 {
     if(typeof ScrollReveal !== 'undefined' && $.isFunction(ScrollReveal)) {
 
         window.sr = ScrollReveal();
 
-        var default_config = {
+        const defaultConfig = {
             duration: 500,
             delay: 0,
             easing: 'ease',
             scale: 1,
             mobile: false
         };
-        var header_config = $.extend(false, default_config, {
+
+        const headerConfig = {
+            ...defaultConfig,
             duration: 1200,
             delay: 700
-        });
-        var footer_config = $.extend(false, default_config, {
+        }
+        
+        const footerConfig = {
+            ...defaultConfig,
             duration: 1500,
             distance: 0,
             viewOffset: {top: 0, right: 0, bottom: 100, left: 0}
-        });
+        }
 
-        var default_delay = 175;
+        const defaultDelay = 175;
 
-        sr.reveal('.a-header', header_config, default_delay);
-        sr.reveal('.a-footer', footer_config, default_delay);
+        sr.reveal('.a-header', headerConfig, defaultDelay);
+        sr.reveal('.a-footer', footerConfig, defaultDelay);
 
     }
 
@@ -104,7 +108,7 @@ function setup_scrollreveal()
 
 
 
-function setup_nivo_lightbox()
+function setupNivoLightbox()
 {
     if($.isFunction($.fn.nivoLightbox))
     {
