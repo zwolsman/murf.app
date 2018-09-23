@@ -1,148 +1,130 @@
 $(document).ready(function() {
+  $("html").addClass("js-enabled")
 
-    $('html').addClass('js-enabled');
+  setupNivoLightbox()
+  setupDense()
 
-    setup_nivo_lightbox();
-    setup_dense();
+  $(window).load(function() {
+    $(".js-preloader").fadeOut(800, () => {
+      $(".js-main-container").fadeIn(800)
 
-    $(window).load(function() {
-        $(".js-preloader").fadeOut(800, function() {
-            $(".js-main-container").fadeIn(800);
+      setupScrollReveal()
+      setupProgressBarAnimation()
+    })
+  })
+})
 
-            setup_scrollreveal();
-            setup_progress_bar_animation();
-        });
-    });
+function setupProgressBarAnimation() {
+  const $animationElements = $("[class*='a-']")
+  const $window = $(window)
 
-});
+  $window.on("scroll resize", function() {
+    const windowHeight = $window.height()
+    const windowTopPosition = $window.scrollTop()
+    const windowBottomPosition = windowTopPosition + windowHeight
 
+    $.each($animationElements, function() {
+      const $element = $(this)
+      const elementHeight = $element.outerHeight()
+      const elementTopPosition = $element.offset().top
+      const elementBottomPosition = elementTopPosition + elementHeight
 
+      // Check to see if this current container is within viewport
+      if (
+        elementBottomPosition >= windowTopPosition &&
+        elementTopPosition <= windowBottomPosition
+      ) {
+        $element.addClass("in-view")
 
-function setup_progress_bar_animation()
-{
-    var $animation_elements = $("[class*='a-']");
-    var $window = $(window);
+        // Animate progress bar
+        if ($element.hasClass("a-progress-bar")) {
+          $element.css("width", $element.attr("data-iq") / 3 + "%")
+        }
+      }
+      //else {
+      //    $element.removeClass('in-view')
+      //}
+    })
+  })
 
-    $window.on('scroll resize', function() {
-        var window_height = $window.height();
-        var window_top_position = $window.scrollTop();
-        var window_bottom_position = (window_top_position + window_height);
-
-        $.each($animation_elements, function() {
-            var $element = $(this);
-            var element_height = $element.outerHeight();
-            var element_top_position = $element.offset().top;
-            var element_bottom_position = (element_top_position + element_height);
-
-            // Check to see if this current container is within viewport
-            if ((element_bottom_position >= window_top_position) &&
-                (element_top_position <= window_bottom_position)) {
-                $element.addClass('in-view');
-
-                // Animate progress bar
-                if ($element.hasClass('a-progress-bar')) {
-                    $element.css('width', ($element.attr('data-iq') / 3)+ '%');
-                }
-
-            }
-            //else {
-            //    $element.removeClass('in-view');
-            //}
-        });
-    });
-
-    $window.trigger('scroll');
-
+  $window.trigger("scroll")
 }
 
-
-
-function setup_dense()
-{
-    if($.isFunction($.fn.dense)) {
-
-        $('img').dense({
-            'glue': '@'
-        });
-
-    }
+function setupDense() {
+  if ($.isFunction($.fn.dense)) {
+    $("img").dense({
+      glue: "@"
+    })
+  }
 }
 
+function setupScrollReveal() {
+  if (typeof ScrollReveal === "undefined" || !$.isFunction(ScrollReveal))
+    return
 
+  window.sr = ScrollReveal()
 
-function setup_scrollreveal()
-{
-    if(typeof ScrollReveal !== 'undefined' && $.isFunction(ScrollReveal)) {
+  const defaultConfig = {
+    duration: 500,
+    delay: 0,
+    easing: "ease",
+    scale: 1,
+    mobile: false
+  }
 
-        window.sr = ScrollReveal();
+  const headerConfig = {
+    ...defaultConfig,
+    duration: 1200,
+    delay: 700
+  }
 
-        var default_config = {
-            duration: 500,
-            delay: 0,
-            easing: 'ease',
-            scale: 1,
-            mobile: false
-        };
-        var header_config = $.extend(false, default_config, {
-            duration: 1200,
-            delay: 700
-        });
-        var footer_config = $.extend(false, default_config, {
-            duration: 1500,
-            distance: 0,
-            viewOffset: {top: 0, right: 0, bottom: 100, left: 0}
-        });
+  const footerConfig = {
+    ...defaultConfig,
+    duration: 1500,
+    distance: 0,
+    viewOffset: { top: 0, right: 0, bottom: 100, left: 0 }
+  }
 
-        var default_delay = 175;
+  const defaultDelay = 175
 
-        sr.reveal('.a-header', header_config, default_delay);
-        sr.reveal('.a-footer', footer_config, default_delay);
-
-    }
-
+  sr.reveal(".a-header", headerConfig, defaultDelay)
+  sr.reveal(".a-footer", footerConfig, defaultDelay)
 }
 
+function setupNivoLightbox() {
+  if ($.isFunction($.fn.nivoLightbox)) {
+    const $selector = $(".js-lightbox")
 
+    // Hide all titles to prevent tooltip from showing
+    $selector.each(function() {
+      const title = $(this).attr("title")
+      $(this).attr("data-title", title)
+      $(this).attr("title", "")
+    })
 
-function setup_nivo_lightbox()
-{
-    if($.isFunction($.fn.nivoLightbox))
-    {
-        var $selector = $('.js-lightbox');
+    // On click, add titles back, so lightbox can display them
+    $selector.click(function() {
+      $selector.each(function() {
+        const title = $(this).attr("data-title")
+        $(this).attr("title", title)
+      })
+    })
 
-        // Hide all titles to prevent tooltip from showing
-        $selector.each(function() {
-            var title = $(this).attr('title');
-            $(this).attr('data-title', title);
-            $(this).attr('title', '');
-        });
-
-        // On click, add titles back, so lightbox can display them
-        $selector.click(function() {
-            $selector.each(function() {
-                var title = $(this).attr('data-title');
-                $(this).attr('title', title);
-            });
-        });
-
-        $selector.nivoLightbox({
-            effect: 'fade',                               // The effect to use when showing the lightbox
-            theme: 'default',                             // The lightbox theme to use
-            keyboardNav: true,                            // Enable/Disable keyboard navigation (left/right/escape)
-            clickOverlayToClose: true,                    // If false clicking the "close" button will be the only way to close the lightbox
-            onInit: function(){},                         // Callback when lightbox has loaded
-            beforeShowLightbox: function(){},             // Callback before the lightbox is shown
-            afterShowLightbox: function(lightbox){},      // Callback after the lightbox is shown
-            beforeHideLightbox: function(){},             // Callback before the lightbox is hidden
-            //afterHideLightbox: function(){},              // Callback after the lightbox is hidden
-            onPrev: function(element){},                  // Callback when the lightbox gallery goes to previous item
-            onNext: function(element){},                  // Callback when the lightbox gallery goes to next item
-            afterHideLightbox: function() {
-                // Remove title to prevent tooltip from showing
-                $selector.attr('title', '');
-            },
-            errorMessage: 'The requested content cannot be loaded. Please try again later.' // Error message when content can't be loaded
-        });
-
-    }
+    $selector.nivoLightbox({
+      effect: "fade", // The effect to use when showing the lightbox
+      theme: "default", // The lightbox theme to use
+      keyboardNav: true, // Enable/Disable keyboard navigation (left/right/escape)
+      clickOverlayToClose: true, // If false clicking the "close" button will be the only way to close the lightbox
+      onInit: () => {}, // Callback when lightbox has loaded
+      beforeShowLightbox: () => {}, // Callback before the lightbox is shown
+      afterShowLightbox: (lightbox) => {}, // Callback after the lightbox is shown
+      beforeHideLightbox: () => {}, // Callback before the lightbox is hidden
+      //afterHideLightbox: function(){},              // Callback after the lightbox is hidden
+      onPrev: (element) => {}, // Callback when the lightbox gallery goes to previous item
+      onNext: (element) => {}, // Callback when the lightbox gallery goes to next item
+      afterHideLightbox: () => selector.attr("title", ""),
+      errorMessage:
+        "The requested content cannot be loaded. Please try again later." // Error message when content can't be loaded
+    })
+  }
 }
